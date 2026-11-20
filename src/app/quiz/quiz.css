@@ -1,0 +1,52 @@
+.quiz {
+  max-width: 640px;
+  margin: 0 auto;
+  background: var(--lighter-lavender);
+  border-radius: 40px;
+  padding: clamp(1.5rem, 5vw, 3rem);
+}
+
+.bar { height: 12px; background: var(--white); border-radius: 999px; overflow: hidden; margin-bottom: 1.4rem; }
+.fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+
+.count {
+  margin: 0 0 0.6rem;
+  font-weight: 700;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+h2 { margin-bottom: 1.4rem; }
+
+.option {
+  display: block;
+  width: 100%;
+  text-align: left;
+  font: inherit;
+  font-weight: 600;
+  background: var(--white);
+  color: var(--black);
+  border: 2px solid var(--lavender);
+  border-radius: 20px;
+  padding: 1rem 1.3rem;
+  margin: 0 0 0.8rem;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
+}
+.option:hover { border-color: var(--primary); transform: translateX(6px); }
+.option:active { background: var(--primary); color: var(--on-primary); }
+
+.nav-row { margin-top: 1.2rem; }
+.link {
+  font: inherit;
+  font-weight: 700;
+  color: var(--indigo);
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.link:hover { color: var(--primary); }

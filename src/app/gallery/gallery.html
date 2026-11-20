@@ -1,0 +1,40 @@
+<div class="page">
+  <p class="eyebrow">The collection</p>
+  <h1>All plants</h1>
+
+  <div class="controls">
+    <label class="search">
+      <span class="sr">Search plants</span>
+      <input type="search" placeholder="Search by name…" [value]="query()" (input)="onSearch($event)">
+    </label>
+
+    <div class="filters" role="group" aria-label="Filter by light">
+      @for (l of lights; track l.value) {
+        <button class="chip" type="button" [class.is-active]="light() === l.value"
+                [attr.aria-pressed]="light() === l.value" (click)="light.set(l.value)">{{ l.label }}</button>
+      }
+      <button class="chip" type="button" [class.is-active]="petSafeOnly()"
+              [attr.aria-pressed]="petSafeOnly()" (click)="petSafeOnly.set(!petSafeOnly())">🐾 Pet-safe</button>
+    </div>
+  </div>
+
+  @if (service.status() === 'loading') {
+    <div class="grid" aria-busy="true">
+      @for (n of [1, 2, 3, 4, 5, 6]; track n) { <div class="ghost"></div> }
+    </div>
+  } @else if (service.status() === 'error') {
+    <p class="empty">Couldn't load the plants. Refresh to try again.</p>
+  } @else {
+    <p class="result-count" aria-live="polite">{{ visible().length }} of {{ service.plants().length }} plants</p>
+    <div class="grid">
+      @for (p of visible(); track p.id) {
+        <app-plant-card [plant]="p" />
+      } @empty {
+        <div class="empty">
+          <p>Nothing matches those filters.</p>
+          <button class="btn btn--small" type="button" (click)="reset()">Clear filters</button>
+        </div>
+      }
+    </div>
+  }
+</div>

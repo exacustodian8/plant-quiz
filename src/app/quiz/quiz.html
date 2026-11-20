@@ -1,0 +1,35 @@
+<div class="page">
+  <section class="quiz">
+    @if (failed()) {
+      <h2>Couldn't load the plants 😕</h2>
+      <p>Check your connection and refresh the page.</p>
+    } @else if (waiting()) {
+      <p class="count" role="status">Finding your plant…</p>
+    } @else {
+      <div class="bar" role="progressbar" aria-label="Quiz progress"
+           [attr.aria-valuenow]="index()" aria-valuemin="0" [attr.aria-valuemax]="questions.length">
+        <div class="fill" [style.width.%]="progress()"></div>
+      </div>
+
+      <p class="count">Question {{ index() + 1 }} of {{ questions.length }}</p>
+
+      <!-- keyed on the question text: a new key re-creates the block and replays the entrance animation -->
+      @for (q of [current()]; track q.text) {
+        <div class="q rise">
+          <h2>{{ q.text }}</h2>
+          @for (opt of q.options; track opt.label) {
+            <button class="option" type="button" (click)="pick(opt)">{{ opt.label }}</button>
+          }
+        </div>
+      }
+
+      <div class="nav-row">
+        @if (index() > 0) {
+          <button class="link" type="button" (click)="back()">← Back</button>
+        } @else {
+          <a class="link" routerLink="/">← Home</a>
+        }
+      </div>
+    }
+  </section>
+</div>

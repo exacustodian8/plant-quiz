@@ -1,0 +1,51 @@
+<div class="page">
+  @if (plant(); as p) {
+    <article class="detail rise">
+      <div class="portrait big" [attr.data-vibe]="p.vibe" aria-hidden="true">{{ p.emoji }}</div>
+
+      <div class="info">
+        @if (isTopMatch() && myMatch(); as m) {
+          <p class="eyebrow">Your plant · {{ m.percent }}% match</p>
+        } @else if (myMatch(); as m) {
+          <p class="eyebrow">{{ m.percent }}% match for you</p>
+        } @else {
+          <p class="eyebrow">{{ vibe[p.vibe] }} plant</p>
+        }
+
+        <h1>{{ p.name }}</h1>
+        <p class="latin">{{ p.scientific }}</p>
+        <p class="blurb">{{ p.blurb }}</p>
+
+        <ul class="tags">
+          <li class="tag">💧 {{ watering[p.watering] }}</li>
+          <li class="tag">☀️ {{ p.sunlight.map(s => sunlight[s]).join(' / ') }}</li>
+          <li class="tag">{{ p.petFriendly ? '🐾 Pet-safe' : '⚠️ Toxic to pets' }}</li>
+        </ul>
+
+        <div class="actions">
+          <button class="btn" type="button" (click)="share()">{{ copied() ? 'Link copied ✓' : 'Share' }}</button>
+          <a class="btn btn--ghost" routerLink="/quiz">{{ myMatch() ? 'Retake the quiz' : 'Find your own' }}</a>
+        </div>
+      </div>
+    </article>
+
+    @if (alsoGood().length) {
+      <section class="also">
+        <h2>Also a good fit</h2>
+        <div class="grid">
+          @for (m of alsoGood(); track m.plant.id) {
+            <app-plant-card [plant]="m.plant" [percent]="m.percent" />
+          }
+        </div>
+      </section>
+    }
+  } @else if (service.status() === 'loading') {
+    <div class="skeleton" aria-busy="true" aria-label="Loading plant"></div>
+  } @else {
+    <div class="missing">
+      <h1>No such plant 🥀</h1>
+      <p>We couldn't find “{{ id() }}”.</p>
+      <a class="btn" routerLink="/plants">Browse all plants</a>
+    </div>
+  }
+</div>

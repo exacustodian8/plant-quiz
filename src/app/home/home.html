@@ -1,0 +1,51 @@
+<div class="page">
+  <section class="hero">
+    <div class="hero__text rise">
+      <p class="eyebrow">A tiny Angular project</p>
+      <h1>Which plant <br>are <em>you</em>?</h1>
+      <p class="lede">Four quick questions about your habits. We'll tell you which houseplant fits your life, and won't be dead by March.</p>
+      <div class="actions">
+        <a class="btn" routerLink="/quiz">Take the quiz</a>
+        @if (store.topMatch(); as top) {
+          <a class="btn btn--ghost" [routerLink]="['/plant', top.plant.id]">Your last result: {{ top.plant.name }}</a>
+        } @else {
+          <a class="btn btn--ghost" routerLink="/plants">Browse {{ count() || '' }} plants</a>
+        }
+      </div>
+    </div>
+
+    <div class="hero__visual" aria-hidden="true">
+      <div class="orb">🪴</div>
+      <span class="sticker sticker--1">Low light ok</span>
+      <span class="sticker sticker--2">Pet-safe</span>
+      <span class="sticker sticker--3">Bold</span>
+    </div>
+  </section>
+
+  <section class="steps" aria-labelledby="how">
+    <h2 id="how">How it works</h2>
+    <ol>
+      @for (s of steps; track s.n) {
+        <li>
+          <span class="n">{{ s.n }}</span>
+          <h3>{{ s.title }}</h3>
+          <p>{{ s.text }}</p>
+        </li>
+      }
+    </ol>
+  </section>
+
+  @if (featured().length) {
+    <section class="featured" aria-labelledby="feat">
+      <div class="featured__head">
+        <h2 id="feat">Some of the contenders</h2>
+        <a routerLink="/plants">See all →</a>
+      </div>
+      <div class="grid">
+        @for (p of featured(); track p.id) {
+          <app-plant-card [plant]="p" />
+        }
+      </div>
+    </section>
+  }
+</div>

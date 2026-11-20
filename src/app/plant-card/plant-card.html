@@ -1,0 +1,13 @@
+<a class="card" [routerLink]="['/plant', plant().id]">
+  <div class="portrait" [attr.data-vibe]="plant().vibe" aria-hidden="true">
+    {{ plant().emoji }}
+    @if (percent() !== null) {
+      <span class="badge">{{ percent() }}% match</span>
+    }
+  </div>
+  <h3>{{ plant().name }}</h3>
+  <p class="latin">{{ plant().scientific }}</p>
+  <p class="meta">
+    {{ watering[plant().watering] }} · {{ plant().petFriendly ? 'Pet-safe' : 'Not pet-safe' }}
+  </p>
+</a>

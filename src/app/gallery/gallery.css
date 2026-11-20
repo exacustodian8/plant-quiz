@@ -1,26 +1,28 @@
-.controls { display: grid; gap: 1rem; margin: 1.6rem 0 0.5rem; }
+.controls { display: grid; gap: 1.2rem; margin: 1.6rem 0 0.5rem; }
 
 .search input {
   width: 100%;
   max-width: 420px;
   font: inherit;
-  padding: 0.8em 1.3em;
-  border-radius: 999px;
-  border: 2px solid var(--lavender);
-  background: var(--lighter-lavender);
+  font-weight: 500;
+  padding: 0.7em 1.1em;
+  border: var(--border);
+  border-radius: 14px;
+  box-shadow: var(--shadow-sm);
+  background: var(--page);
   color: var(--black);
 }
-.search input:focus { outline: none; border-color: var(--primary); }
+.search input:focus { outline: none; background: var(--vanilla); box-shadow: 6px 6px 0 var(--orange); }
 
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 
-.filters { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+.filters { display: flex; flex-wrap: wrap; gap: 0.7rem; }
 
-.result-count { color: var(--muted); margin: 1.2rem 0 0; font-size: 0.95rem; }
+.result-count { margin: 1.4rem 0 0; font-weight: 700; font-size: 0.95rem; }
 
-.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; margin-top: 1rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 28px; margin-top: 1rem; }
 
-.ghost { height: 340px; border-radius: 28px; background: linear-gradient(100deg, var(--lighter-lavender) 30%, var(--lavender) 50%, var(--lighter-lavender) 70%); background-size: 200% 100%; animation: shimmer 1.4s linear infinite; }
-@keyframes shimmer { to { background-position: -200% 0; } }
+.ghost { height: 340px; border: var(--border); border-radius: 24px; background: repeating-linear-gradient(45deg, var(--vanilla) 0 14px, var(--page) 14px 28px); background-size: 40px 40px; animation: slide 1s linear infinite; }
+@keyframes slide { to { background-position: 40px 0; } }
 
-.empty { grid-column: 1 / -1; text-align: center; padding: 3rem 0; color: var(--muted); }
+.empty { grid-column: 1 / -1; text-align: center; padding: 3rem 0; font-weight: 700; }

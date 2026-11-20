@@ -14,7 +14,7 @@ import { RouterLink } from '@angular/router';
   `,
   styles: `
     .missing { text-align: center; padding-top: 180px; }
-    p:not(.eyebrow) { color: var(--muted); margin: 1rem 0 2rem; }
+    p:not(.eyebrow) { margin: 1rem 0 2rem; }
   `,
 })
 export class NotFound {}

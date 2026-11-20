@@ -1,143 +1,142 @@
 :root {
-  --purple: #A42CD6;
-  --indigo: #502274;
-  --black: #140A1F;
-  --lavender: #E6D3FA;
-  --lighter-lavender: #F4EBFF;
-  --pink: #E0359E;
-  --white: #FBF8FF;
-  --muted: #5d5470;
+  --amber: #ffc100;
+  --orange: #ff8200;
+  --black: #0a0903;
+  --vanilla: #ffeaae;
+  --red: #ff2d2d;
+  --page: #fffdf7;
+  --muted: #4a4535;
 
-  --bg: var(--white);
-  --text: var(--black);
-  --primary: var(--purple);
-  --primary-hover: var(--indigo);
-  --on-primary: #ffffff;
+  --font-display: 'Archivo Black', 'Arial Black', system-ui, sans-serif;
+  --font-body: 'Space Grotesk', system-ui, sans-serif;
 
-  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, sans-serif;
+  --border: 3px solid var(--black);
+  --shadow: 6px 6px 0 var(--black);
+  --shadow-sm: 4px 4px 0 var(--black);
 }
 
 *, *::before, *::after { box-sizing: border-box; }
-
 html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
   font-family: var(--font-body);
   font-size: 1.05rem;
-  line-height: 1.6;
-  color: var(--text);
-  background: var(--bg);
+  line-height: 1.5;
+  color: var(--black);
+  background: var(--page);
+  background-image: radial-gradient(var(--vanilla) 1.5px, transparent 1.5px);
+  background-size: 22px 22px;
   overflow-x: hidden;
 }
 
 h1, h2, h3 {
   font-family: var(--font-display);
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.01em;
   margin: 0;
+  text-transform: uppercase;
 }
-h1 { font-size: clamp(2.6rem, 7vw, 5rem); font-weight: 800; }
-h2 { font-size: clamp(1.8rem, 4.5vw, 2.6rem); font-weight: 800; }
+h1 { font-size: clamp(2.5rem, 8vw, 5.2rem); }
+h2 { font-size: clamp(1.6rem, 4.5vw, 2.4rem); }
 
 a { color: inherit; }
 ul { margin: 0; padding: 0; list-style: none; }
 
-:focus-visible { outline: 3px solid var(--pink); outline-offset: 3px; }
+:focus-visible { outline: 4px solid var(--orange); outline-offset: 3px; }
 
-.page {
-  max-width: 1160px;
-  margin: 0 auto;
-  padding: 140px 24px 40px;
-}
+.page { max-width: 1120px; margin: 0 auto; padding: 130px 24px 40px; }
 
 .eyebrow {
+  display: inline-block;
+  margin: 0 0 1rem;
+  padding: 0.2em 0.7em;
+  background: var(--black);
+  color: var(--amber);
   font-weight: 700;
-  font-size: 0.95rem;
-  letter-spacing: 0.12em;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--primary);
-  margin: 0 0 0.8rem;
+  transform: rotate(-1.5deg);
 }
 
+/* Buttons: hard shadow that "presses" on hover/active */
 .btn {
   display: inline-block;
   font: inherit;
   font-weight: 700;
-  padding: 0.9em 1.6em;
-  border: 0;
-  border-radius: 999px;
-  background: var(--primary);
-  color: var(--on-primary);
+  padding: 0.75em 1.4em;
+  border: var(--border);
+  border-radius: 14px;
+  background: var(--amber);
+  color: var(--black);
+  box-shadow: var(--shadow-sm);
   text-decoration: none;
   cursor: pointer;
-  transition: transform 0.25s, background 0.2s;
+  transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
 }
-.btn:hover { background: var(--primary-hover); transform: translateY(-3px); }
-.btn--small { padding: 0.6em 1.2em; font-size: 0.92rem; }
-.btn--ghost {
-  background: transparent;
-  color: var(--indigo);
-  box-shadow: inset 0 0 0 2px var(--lavender);
-}
-.btn--ghost:hover { background: var(--lavender); }
+.btn:hover { background: var(--orange); transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--black); }
+.btn:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--black); }
+.btn--small { padding: 0.45em 1em; font-size: 0.92rem; }
+.btn--ghost { background: var(--page); }
 
 .chip {
   font: inherit;
   font-weight: 700;
   font-size: 0.95rem;
-  padding: 0.5em 1.1em;
+  padding: 0.4em 1em;
+  border: var(--border);
   border-radius: 999px;
-  border: 2px solid var(--lavender);
-  background: var(--lighter-lavender);
-  color: var(--indigo);
+  background: var(--page);
+  color: var(--black);
+  box-shadow: 3px 3px 0 var(--black);
   cursor: pointer;
-  transition: all 0.25s;
+  transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
 }
-.chip:hover { border-color: var(--primary); }
-.chip.is-active { background: var(--primary); border-color: var(--primary); color: var(--on-primary); }
+.chip:hover { background: var(--vanilla); }
+.chip:active { transform: translate(3px, 3px); box-shadow: none; }
+.chip.is-active { background: var(--orange); }
 
 .tag {
   display: inline-flex;
   align-items: center;
   gap: 0.4em;
-  padding: 0.3em 0.9em;
+  padding: 0.25em 0.85em;
+  border: var(--border);
   border-radius: 999px;
-  background: var(--lighter-lavender);
-  color: var(--indigo);
+  background: var(--amber);
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.92rem;
 }
 
-/* Plant "portrait": emoji on a vibe-coloured tile */
+/* Plant "portrait": emoji on a flat colour block */
 .portrait {
   display: grid;
   place-items: center;
   aspect-ratio: 1;
-  border-radius: 24px;
+  border: var(--border);
+  border-radius: 20px;
   font-size: 4.5rem;
-  background: var(--lavender);
+  background: var(--vanilla);
 }
-.portrait[data-vibe='bold'] { background: linear-gradient(135deg, #ffd3ee, #f7a6d6); }
-.portrait[data-vibe='calm'] { background: linear-gradient(135deg, #efe3ff, #cdb2f3); }
-.portrait[data-vibe='quirky'] { background: linear-gradient(135deg, #e9b8ff, #c070e8); }
+.portrait[data-vibe='bold'] { background: var(--orange); }
+.portrait[data-vibe='calm'] { background: var(--vanilla); }
+.portrait[data-vibe='quirky'] { background: var(--amber); }
 
 @keyframes rise {
   from { opacity: 0; transform: translateY(24px); }
   to { opacity: 1; transform: none; }
 }
-.rise { animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.rise { animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 
-::view-transition-old(root) { animation: 0.2s ease both fade-out; }
-::view-transition-new(root) { animation: 0.35s ease both fade-in; }
+::view-transition-old(root) { animation: 0.15s ease both fade-out; }
+::view-transition-new(root) { animation: 0.3s ease both fade-in; }
 @keyframes fade-out { to { opacity: 0; } }
 @keyframes fade-in { from { opacity: 0; } }
 
 @media (max-width: 560px) {
-  .page { padding: 120px 20px 32px; }
-  .nav { padding-left: 18px; }
-  .nav__logo { font-size: 1.25rem; }
+  .page { padding: 115px 18px 32px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

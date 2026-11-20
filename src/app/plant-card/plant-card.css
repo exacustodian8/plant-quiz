@@ -1,33 +1,32 @@
 .card {
   display: block;
   text-decoration: none;
-  background: var(--primary);
-  color: var(--on-primary);
-  border-radius: 28px;
-  padding: 12px 12px 20px;
-  transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 0.4s;
+  background: var(--page);
+  border: var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  padding: 12px 12px 18px;
+  transition: transform 0.12s, box-shadow 0.12s;
 }
 .card:hover,
-.card:focus-visible {
-  transform: translateY(-8px) rotate(-0.6deg);
-  box-shadow: 0 20px 50px -20px rgba(164, 44, 214, 0.55);
-}
+.card:focus-visible { transform: translate(-3px, -3px) rotate(-0.5deg); box-shadow: 9px 9px 0 var(--black); }
+.card:active { transform: translate(6px, 6px); box-shadow: 0 0 0 var(--black); }
 
-.portrait { position: relative; border-radius: 18px; aspect-ratio: 4 / 3; }
+.portrait { position: relative; aspect-ratio: 4 / 3; }
 
 .badge {
   position: absolute;
   top: 10px;
   right: 10px;
-  padding: 0.25em 0.8em;
+  padding: 0.15em 0.7em;
+  border: 2px solid var(--black);
   border-radius: 999px;
-  background: var(--black);
-  color: var(--lavender);
+  background: var(--page);
   font-family: var(--font-body);
   font-size: 0.8rem;
   font-weight: 700;
 }
 
-h3 { margin: 1rem 0.5rem 0.1rem; font-size: 1.4rem; font-weight: 800; }
-.latin { margin: 0 0.5rem; font-style: italic; opacity: 0.85; font-size: 0.95rem; }
-.meta { margin: 0.5rem 0.5rem 0; color: var(--lavender); font-size: 0.9rem; }
+h3 { margin: 1rem 0.4rem 0.2rem; font-size: 1.25rem; }
+.latin { margin: 0 0.4rem; font-style: italic; font-size: 0.95rem; }
+.meta { margin: 0.5rem 0.4rem 0; font-weight: 700; font-size: 0.85rem; }

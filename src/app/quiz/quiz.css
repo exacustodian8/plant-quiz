@@ -1,52 +1,39 @@
 .quiz {
-  max-width: 640px;
+  max-width: 620px;
   margin: 0 auto;
-  background: var(--lighter-lavender);
-  border-radius: 40px;
-  padding: clamp(1.5rem, 5vw, 3rem);
+  background: var(--vanilla);
+  border: var(--border);
+  border-radius: 28px;
+  box-shadow: 10px 10px 0 var(--black);
+  padding: clamp(1.4rem, 5vw, 2.4rem);
 }
 
-.bar { height: 12px; background: var(--white); border-radius: 999px; overflow: hidden; margin-bottom: 1.4rem; }
-.fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.bar { height: 18px; background: var(--page); border: var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 1.2rem; }
+.fill { height: 100%; background: var(--orange); transition: width 0.35s ease; }
 
-.count {
-  margin: 0 0 0.6rem;
-  font-weight: 700;
-  font-size: 0.85rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--primary);
-}
+.count { margin: 0 0 0.6rem; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.08em; text-transform: uppercase; }
 
-h2 { margin-bottom: 1.4rem; }
+h2 { margin-bottom: 1.3rem; }
 
 .option {
   display: block;
   width: 100%;
   text-align: left;
   font: inherit;
-  font-weight: 600;
-  background: var(--white);
-  color: var(--black);
-  border: 2px solid var(--lavender);
-  border-radius: 20px;
-  padding: 1rem 1.3rem;
-  margin: 0 0 0.8rem;
-  cursor: pointer;
-  transition: transform 0.2s, border-color 0.2s, background 0.2s, color 0.2s;
-}
-.option:hover { border-color: var(--primary); transform: translateX(6px); }
-.option:active { background: var(--primary); color: var(--on-primary); }
-
-.nav-row { margin-top: 1.2rem; }
-.link {
-  font: inherit;
   font-weight: 700;
-  color: var(--indigo);
-  background: none;
-  border: 0;
-  padding: 0;
+  background: var(--page);
+  color: var(--black);
+  border: var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow-sm);
+  padding: 0.9rem 1.1rem;
+  margin: 0 0 1rem;
   cursor: pointer;
-  text-decoration: none;
+  transition: transform 0.1s, box-shadow 0.1s, background 0.1s;
 }
-.link:hover { color: var(--primary); }
+.option:hover { background: var(--amber); }
+.option:active { transform: translate(4px, 4px); box-shadow: 0 0 0 var(--black); }
+
+.nav-row { margin-top: 0.4rem; }
+.link { font: inherit; font-weight: 700; color: var(--black); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.link:hover { background: var(--amber); }

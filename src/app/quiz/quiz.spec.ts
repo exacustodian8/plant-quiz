@@ -7,7 +7,7 @@ import { QUESTIONS } from '../quiz-data';
 import { Plant } from '../plant';
 
 const PLANTS: Plant[] = [
-  { id: 'snake', name: 'Snake Plant', scientific: 'D. t.', emoji: '🌿', blurb: '', watering: 'minimum',
+  { id: 'snake', image: 'plants/snake.jpg', credit: { author: 'A', license: 'CC0', source: '' }, name: 'Snake Plant', scientific: 'D. t.', emoji: '🌿', blurb: '', watering: 'minimum',
     sunlight: ['full_shade', 'part_shade', 'full_sun'], petFriendly: true, vibe: 'calm' },
 ];
 

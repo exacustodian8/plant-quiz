@@ -16,6 +16,13 @@
       <button class="chip" type="button" [class.is-active]="petSafeOnly()"
               [attr.aria-pressed]="petSafeOnly()" (click)="petSafeOnly.set(!petSafeOnly())">🐾 Pet-safe</button>
     </div>
+
+    <div class="filters" role="group" aria-label="Filter by vibe">
+      @for (v of vibes; track v.value) {
+        <button class="chip" type="button" [class.is-active]="vibe() === v.value"
+                [attr.aria-pressed]="vibe() === v.value" (click)="vibe.set(v.value)">{{ v.label }}</button>
+      }
+    </div>
   </div>
 
   @if (service.status() === 'loading') {
@@ -27,8 +34,8 @@
   } @else {
     <p class="result-count" aria-live="polite">{{ visible().length }} of {{ service.plants().length }} plants</p>
     <div class="grid">
-      @for (p of visible(); track p.id) {
-        <app-plant-card [plant]="p" />
+      @for (p of visible(); track p.id; let i = $index) {
+        <app-plant-card [plant]="p" appReveal="up" [revealDelay]="(i % 3) * 90" />
       } @empty {
         <div class="empty">
           <p>Nothing matches those filters.</p>

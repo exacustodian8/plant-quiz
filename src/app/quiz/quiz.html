@@ -17,8 +17,8 @@
       @for (q of [current()]; track q.text) {
         <div class="q rise">
           <h2>{{ q.text }}</h2>
-          @for (opt of q.options; track opt.label) {
-            <button class="option" type="button" (click)="pick(opt)">{{ opt.label }}</button>
+          @for (opt of q.options; track opt.label; let i = $index) {
+            <button class="option slide" type="button" [style.animation-delay.ms]="120 + i * 90" (click)="pick(opt)">{{ opt.label }}</button>
           }
         </div>
       }

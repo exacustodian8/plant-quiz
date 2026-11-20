@@ -1,6 +1,7 @@
 <a class="card" [routerLink]="['/plant', plant().id]">
-  <div class="portrait" [attr.data-vibe]="plant().vibe" aria-hidden="true">
-    {{ plant().emoji }}
+  <div class="portrait" [attr.data-vibe]="plant().vibe">
+    <img [src]="plant().image" [alt]="plant().name" loading="lazy" width="400" height="300">
+    <span class="emoji" aria-hidden="true">{{ plant().emoji }}</span>
     @if (percent() !== null) {
       <span class="badge">{{ percent() }}% match</span>
     }

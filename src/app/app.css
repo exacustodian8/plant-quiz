@@ -31,6 +31,29 @@
 .nav .btn { background: var(--black); color: var(--amber); box-shadow: 3px 3px 0 var(--orange); }
 .nav .btn:hover { background: var(--page); color: var(--black); }
 
+@media (max-width: 560px) {
+  .nav { gap: 0.5rem; padding: 8px 8px 8px 14px; top: 12px; width: calc(100% - 24px); }
+  .nav__logo { font-size: 1.05rem; }
+  .nav__links { gap: 0.8rem; margin-right: 0.2rem; font-size: 0.92rem; }
+  .nav .btn { white-space: nowrap; padding: 0.5em 0.9em; font-size: 0.85rem; }
+}
+
+/* ---------- Background decoration: fixed shapes drifting behind the page ---------- */
+.decor { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
+.d { position: absolute; fill: none; stroke: var(--black); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; animation: drift var(--t, 9s) ease-in-out infinite; }
+.d--star, .d--star2, .d--tri { fill: var(--amber); }
+.d--ring { stroke: var(--orange); stroke-width: 8; }
+.d--star { width: 70px; top: 14%; left: 3%; --t: 10s; rotate: 12deg; }
+.d--star2 { width: 46px; bottom: 12%; right: 5%; --t: 12s; rotate: -18deg; fill: var(--orange); }
+.d--squiggle { width: 110px; top: 40%; right: 2%; --t: 8s; rotate: -10deg; }
+.d--squiggle2 { width: 90px; bottom: 6%; left: 6%; --t: 11s; rotate: 8deg; }
+.d--plus { width: 38px; top: 8%; right: 12%; --t: 7s; }
+.d--plus2 { width: 30px; top: 62%; left: 2%; --t: 9s; }
+.d--ring { width: 64px; top: 78%; right: 14%; --t: 13s; }
+.d--tri { width: 52px; top: 30%; left: 1%; --t: 14s; rotate: -14deg; fill: var(--vanilla); }
+@keyframes drift { 50% { translate: 0 -22px; transform: rotate(14deg); } }
+@media (max-width: 700px) { .d { opacity: 0.5; } .d--squiggle, .d--tri { display: none; } }
+
 .footer {
   max-width: 1120px;
   margin: 0 auto;

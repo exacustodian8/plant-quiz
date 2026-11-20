@@ -1,7 +1,17 @@
 import { Traits } from './quiz-data';
 
+export interface PhotoCredit {
+  author: string;
+  license: string;
+  /** iNaturalist observation page the photo came from */
+  source: string;
+}
+
 export interface Plant {
   id: string;
+  /** path to a local photo under /plants */
+  image: string;
+  credit: PhotoCredit;
   name: string;
   scientific: string;
   emoji: string;

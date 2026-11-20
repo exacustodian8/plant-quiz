@@ -1,7 +1,16 @@
 <div class="page">
   @if (plant(); as p) {
     <article class="detail rise">
-      <div class="portrait big" [attr.data-vibe]="p.vibe" aria-hidden="true">{{ p.emoji }}</div>
+      <figure class="photo">
+        <div class="portrait big" [attr.data-vibe]="p.vibe">
+          <img [src]="p.image" [alt]="p.name" width="900" height="900">
+          <span class="emoji" aria-hidden="true">{{ p.emoji }}</span>
+        </div>
+        <figcaption>
+          Photo: {{ p.credit.author }} ·
+          <a [href]="p.credit.source" target="_blank" rel="noopener">{{ p.credit.license }}</a> · via iNaturalist
+        </figcaption>
+      </figure>
 
       <div class="info">
         @if (isTopMatch() && myMatch(); as m) {

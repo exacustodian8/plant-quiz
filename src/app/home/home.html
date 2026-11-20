@@ -1,10 +1,10 @@
 <div class="page">
   <section class="hero">
-    <div class="hero__text rise">
-      <p class="eyebrow">A tiny Angular project</p>
-      <h1>Which plant <br>are <em>you</em>?</h1>
-      <p class="lede">Four quick questions about your habits. We'll tell you which houseplant fits your life, and won't be dead by March.</p>
-      <div class="actions">
+    <div class="hero__text">
+      <p class="eyebrow rise">A tiny Angular project</p>
+      <h1 class="rise" style="animation-delay: 0.08s">Which plant <br>are <em>you</em>?</h1>
+      <p class="lede rise" style="animation-delay: 0.16s">Four quick questions about your habits. We'll tell you which houseplant fits your life, and won't be dead by March.</p>
+      <div class="actions rise" style="animation-delay: 0.24s">
         <a class="btn" routerLink="/quiz">Take the quiz</a>
         @if (store.topMatch(); as top) {
           <a class="btn btn--ghost" [routerLink]="['/plant', top.plant.id]">Your last result: {{ top.plant.name }}</a>
@@ -14,19 +14,31 @@
       </div>
     </div>
 
-    <div class="hero__visual" aria-hidden="true">
-      <div class="orb">🪴</div>
+    <div class="collage" aria-hidden="true">
+      <div class="burst"><span>4 quick<br>questions</span></div>
+      <figure class="snap snap--1"><img src="plants/monstera.jpg" alt="" width="400" height="400"></figure>
+      <figure class="snap snap--2"><img src="plants/snake.jpg" alt="" width="400" height="400"></figure>
+      <figure class="snap snap--3"><img src="plants/aloe.jpg" alt="" width="400" height="400"></figure>
       <span class="sticker sticker--1">Low light ok</span>
-      <span class="sticker sticker--2">Pet-safe</span>
-      <span class="sticker sticker--3">Bold</span>
+      <span class="sticker sticker--2">Pet-safe?</span>
     </div>
   </section>
 
+  <section class="facts" aria-label="At a glance">
+    @for (f of facts(); track f.label; let i = $index) {
+      <div class="fact" [appReveal]="i === 0 ? 'left' : i === 1 ? 'pop' : 'right'" [revealDelay]="i * 100">
+        <strong>{{ f.value }}</strong>
+        <span>{{ f.label }}</span>
+      </div>
+    }
+  </section>
+
   <section class="steps" aria-labelledby="how">
-    <h2 id="how">How it works</h2>
+    <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="8" src="plants/jade.jpg" alt="" width="260" height="260">
+    <h2 id="how" appReveal="left">How it works</h2>
     <ol>
-      @for (s of steps; track s.n) {
-        <li>
+      @for (s of steps; track s.n; let i = $index) {
+        <li [appReveal]="i === 1 ? 'up' : i === 0 ? 'left' : 'right'" [revealDelay]="i * 100">
           <span class="n">{{ s.n }}</span>
           <h3>{{ s.title }}</h3>
           <p>{{ s.text }}</p>
@@ -35,17 +47,43 @@
     </ol>
   </section>
 
+  <section class="vibes" aria-labelledby="vibes-h">
+    <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" src="plants/peperomia.jpg" alt="" width="240" height="240">
+    <h2 id="vibes-h" appReveal="right">Pick a personality</h2>
+    <div class="vibes__grid">
+      @for (v of vibes; track v.key; let i = $index) {
+        <a class="vibe" [routerLink]="['/plants']" [queryParams]="{ vibe: v.key }"
+           [attr.data-vibe]="v.key" [appReveal]="i === 0 ? 'left' : i === 1 ? 'pop' : 'right'" [revealDelay]="i * 120">
+          <img [src]="v.image" alt="" loading="lazy" width="400" height="300">
+          <h3>{{ v.title }}</h3>
+          <p>{{ v.text }}</p>
+          <span class="go">See {{ v.key }} plants →</span>
+        </a>
+      }
+    </div>
+  </section>
+
   @if (featured().length) {
     <section class="featured" aria-labelledby="feat">
-      <div class="featured__head">
+      <div class="featured__head" appReveal>
         <h2 id="feat">Some of the contenders</h2>
         <a routerLink="/plants">See all →</a>
       </div>
       <div class="grid">
-        @for (p of featured(); track p.id) {
-          <app-plant-card [plant]="p" />
+        @for (p of featured(); track p.id; let i = $index) {
+          <app-plant-card [plant]="p" appReveal="up" [revealDelay]="i * 120" />
         }
       </div>
     </section>
   }
+
+  <section class="cta">
+    <img class="flyer flyer--left" appFlyIn="left" [flyTilt]="-9" [flySpin]="50" src="plants/fern.jpg" alt="" width="260" height="260">
+    <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" [flySpin]="50" src="plants/palm.jpg" alt="" width="260" height="260">
+    <div class="cta__box" appReveal="pop">
+      <h2>Ready to meet your match?</h2>
+      <p>Takes about 20 seconds. No sign-up, no spam.</p>
+      <a class="btn" routerLink="/quiz">Start the quiz</a>
+    </div>
+  </section>
 </div>

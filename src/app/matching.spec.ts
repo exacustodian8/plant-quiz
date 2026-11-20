@@ -2,7 +2,7 @@ import { rankPlants, score } from './matching';
 import { Plant } from './plant';
 
 const make = (over: Partial<Plant>): Plant => ({
-  id: 'x', name: 'X', scientific: 'X x', emoji: '🌿', blurb: '',
+  id: 'x', image: 'plants/x.jpg', credit: { author: 'A', license: 'CC0', source: '' }, name: 'X', scientific: 'X x', emoji: '🌿', blurb: '',
   watering: 'average', sunlight: ['part_shade'], petFriendly: true, vibe: 'calm',
   ...over,
 });

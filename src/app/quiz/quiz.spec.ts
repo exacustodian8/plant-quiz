@@ -36,11 +36,11 @@ describe('Quiz', () => {
 
     el.querySelector<HTMLButtonElement>('.option')!.click();
     await fixture.whenStable();
-    expect(el.querySelector('.count')?.textContent).toContain('Question 2 of 4');
+    expect(el.querySelector('.count')?.textContent).toContain('Question 2 of ' + QUESTIONS.length);
 
     el.querySelector<HTMLButtonElement>('.link')!.click();
     await fixture.whenStable();
-    expect(el.querySelector('.count')?.textContent).toContain('Question 1 of 4');
+    expect(el.querySelector('.count')?.textContent).toContain('Question 1 of ' + QUESTIONS.length);
   });
 
   it('turns the answers into one API search and opens the best plant', async () => {
@@ -48,14 +48,19 @@ describe('Quiz', () => {
     const navigate = vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     await answerAll();
 
-    // first option of every question: rarely watered, low light, has pets, cooks
+    // first option of every question: rarely watered, low light, indoors, pets, cooks, chilly, perennial, leafy
     const req = listRequest(http);
     const p = req.request.params;
-    expect([p.get('watering'), p.get('sunlight'), p.get('poisonous'), p.get('edible')]).toEqual(['minimum', 'full_shade', '0', '1']);
+    expect([p.get('watering'), p.get('sunlight'), p.get('indoor'), p.get('poisonous'), p.get('edible'), p.get('cycle'), p.get('hardiness')])
+      .toEqual(['minimum', 'full_shade', '1', '0', '1', 'perennial', '5']);
 
     req.flush(page([raw(11, 'sweet-basil'), raw(12, 'mint'), raw(13, 'parsley'), raw(14, 'chives')]));
-    expect(navigate).toHaveBeenCalledWith(['/plant', 11], { queryParams: { n: 'Sweet Basil' } });
-    expect(JSON.parse(localStorage.getItem('plantquiz:traits')!)).toMatchObject({ watering: 'minimum', edible: true });
+    expect(navigate).toHaveBeenCalledTimes(1);
+    const [commands, extras] = navigate.mock.calls[0] as [unknown[], { queryParams: { n: string } }];
+    expect(commands[0]).toBe('/plant');
+    expect([11, 12, 13, 14]).toContain(commands[1]); // which of the four is decided by the seeded ordering
+    expect(typeof extras.queryParams.n).toBe('string');
+    expect(JSON.parse(localStorage.getItem('plantquiz:traits')!)).toMatchObject({ watering: 'minimum', edible: true, warmth: 'chilly', style: 'leafy' });
   });
 
   it('relaxes the search when the strict one finds too little', async () => {
@@ -63,8 +68,9 @@ describe('Quiz', () => {
     vi.spyOn(TestBed.inject(Router), 'navigate').mockResolvedValue(true);
     await answerAll();
 
-    listRequest(http, (r) => r.params.has('edible')).flush(page([raw(1, 'basil')])); // only 1 of the 4 wanted
-    const relaxed = listRequest(http, (r) => !r.params.has('edible') && r.params.has('watering'));
+    listRequest(http, (r) => r.params.has('hardiness')).flush(page([raw(1, 'basil')])); // only 1 of the 4 wanted
+    // the least important preference (warmth) is dropped first; everything else is kept
+    const relaxed = listRequest(http, (r) => !r.params.has('hardiness') && r.params.has('cycle'));
     expect(relaxed.request.params.get('poisonous')).toBe('0'); // pet safety survives relaxing
     relaxed.flush(page([raw(1, 'basil'), raw(2, 'aloe'), raw(3, 'jade'), raw(4, 'cactus')]));
   });

@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" appBg="checker">
   <section class="quiz">
     @if (error(); as kind) {
       <app-api-notice [kind]="kind" (retry)="search()" />

@@ -38,21 +38,98 @@
   .nav .btn { white-space: nowrap; padding: 0.5em 0.9em; font-size: 0.85rem; }
 }
 
-/* ---------- Background decoration: fixed shapes drifting behind the page ---------- */
+/* ---------- Scroll progress ---------- */
+.progress { position: fixed; top: 0; left: 0; right: 0; height: 6px; z-index: 60; background: transparent; pointer-events: none; }
+.progress span { display: block; height: 100%; background: var(--orange); border-bottom: 2px solid var(--black); transform-origin: left; transform: scaleX(0); will-change: transform; }
+
+/* ---------- Background pattern layers ----------
+   `--sy` is the scroll distance in px (set from app.ts). Each pattern is a repeating tile whose
+   position is shifted by a multiple of --sy, so stacked grids slide past each other at different
+   speeds (parallax) without ever running out of background. The active layer cross-fades in. */
+.bgfx { position: fixed; inset: 0; z-index: -2; overflow: hidden; pointer-events: none; }
+.glow {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 12% 8%, rgba(255, 193, 0, 0.28), transparent 38%),
+    radial-gradient(circle at 92% 38%, rgba(255, 130, 0, 0.18), transparent 36%),
+    radial-gradient(circle at 20% 88%, rgba(255, 193, 0, 0.24), transparent 40%);
+}
+.layer { position: absolute; inset: 0; opacity: 0; transition: opacity 0.9s ease; }
+.layer.on { opacity: 1; }
+
+.layer[data-pat='dots'] {
+  background-image: radial-gradient(#f3cf6b 2px, transparent 2.5px), radial-gradient(#ffe39a 1.5px, transparent 2px);
+  background-size: 26px 26px, 26px 26px;
+  background-position: 0 calc(var(--sy, 0) * -0.1px), 13px calc(13px - var(--sy, 0) * 0.22px);
+}
+.layer[data-pat='stripes'] {
+  background-image: repeating-linear-gradient(-45deg, rgba(255, 193, 0, 0.24) 0 22px, transparent 22px 44px);
+  background-size: 62.2px 62.2px;
+  background-position: calc(var(--sy, 0) * 0.28px) calc(var(--sy, 0) * -0.12px);
+}
+.layer[data-pat='checker'] {
+  background-image:
+    conic-gradient(rgba(255, 193, 0, 0.13) 25%, transparent 0 50%, rgba(255, 193, 0, 0.13) 0 75%, transparent 0),
+    conic-gradient(rgba(255, 130, 0, 0.07) 25%, transparent 0 50%, rgba(255, 130, 0, 0.07) 0 75%, transparent 0);
+  background-size: 80px 80px, 160px 160px;
+  background-position: 0 calc(var(--sy, 0) * -0.14px), 0 calc(var(--sy, 0) * 0.2px);
+}
+.layer[data-pat='grid'] {
+  background-image:
+    linear-gradient(rgba(10, 9, 3, 0.1) 2px, transparent 2px),
+    linear-gradient(90deg, rgba(10, 9, 3, 0.1) 2px, transparent 2px),
+    linear-gradient(rgba(255, 193, 0, 0.28) 6px, transparent 6px);
+  background-size: 44px 44px, 44px 44px, 176px 176px;
+  background-position: 0 calc(var(--sy, 0) * -0.16px), 0 calc(var(--sy, 0) * -0.16px), 0 calc(var(--sy, 0) * -0.3px);
+}
+.layer[data-pat='waves'] {
+  background-image:
+    radial-gradient(circle at 50% 100%, transparent 0 34%, rgba(255, 130, 0, 0.24) 35% 40%, transparent 41%),
+    radial-gradient(circle at 50% 100%, transparent 0 34%, rgba(255, 193, 0, 0.3) 35% 40%, transparent 41%);
+  background-size: 70px 44px, 112px 70px;
+  background-position: calc(var(--sy, 0) * 0.18px) calc(var(--sy, 0) * -0.1px), 0 calc(var(--sy, 0) * -0.24px);
+}
+/* rays: one huge sunburst that slowly rotates as you scroll */
+.layer[data-pat='rays'] {
+  inset: auto; left: 50%; top: 45%; width: 240vmax; height: 240vmax;
+  translate: -50% -50%;
+  rotate: calc(var(--sy, 0) * 0.02deg);
+  background: repeating-conic-gradient(rgba(255, 193, 0, 0.26) 0 7deg, transparent 7deg 14deg);
+}
+
+/* ---------- Decorative shapes at different depths ----------
+   Each shape scrolls at its own speed (--sp), wraps round the screen, sways side to side and spins
+   as you scroll. Browsers without CSS mod()/sin() just keep them in place. */
 .decor { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; }
-.d { position: absolute; fill: none; stroke: var(--black); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; animation: drift var(--t, 9s) ease-in-out infinite; }
-.d--star, .d--star2, .d--tri { fill: var(--amber); }
-.d--ring { stroke: var(--orange); stroke-width: 8; }
-.d--star { width: 70px; top: 14%; left: 3%; --t: 10s; rotate: 12deg; }
-.d--star2 { width: 46px; bottom: 12%; right: 5%; --t: 12s; rotate: -18deg; fill: var(--orange); }
-.d--squiggle { width: 110px; top: 40%; right: 2%; --t: 8s; rotate: -10deg; }
-.d--squiggle2 { width: 90px; bottom: 6%; left: 6%; --t: 11s; rotate: 8deg; }
-.d--plus { width: 38px; top: 8%; right: 12%; --t: 7s; }
-.d--plus2 { width: 30px; top: 62%; left: 2%; --t: 9s; }
-.d--ring { width: 64px; top: 78%; right: 14%; --t: 13s; }
-.d--tri { width: 52px; top: 30%; left: 1%; --t: 14s; rotate: -14deg; fill: var(--vanilla); }
-@keyframes drift { 50% { translate: 0 -22px; transform: rotate(14deg); } }
-@media (max-width: 700px) { .d { opacity: 0.5; } .d--squiggle, .d--tri { display: none; } }
+.d { position: absolute; left: var(--x0); top: var(--y0); fill: none; stroke: var(--black); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; rotate: var(--r, 0deg); animation: drift var(--t, 9s) ease-in-out infinite; }
+@supports (translate: mod(10px, 3px)) {
+  .d {
+    top: 0;
+    translate:
+      calc(sin(var(--sy, 0) * 0.004 + var(--ph, 0)) * 38px)
+      calc(mod(var(--y0) - var(--sy, 0) * var(--sp, 0.3) * 1px, 114vh) - 7vh);
+    rotate: calc(var(--r, 0deg) + var(--sy, 0) * var(--sp, 0.3) * 0.06deg);
+  }
+}
+.d--star, .d--star2, .d--tri, .d--bolt { fill: var(--amber); }
+.d--ring, .d--ring2 { stroke: var(--orange); stroke-width: 8; }
+.d--star { width: 70px; --x0: 3%; --y0: 14vh; --sp: 0.35; --r: 12deg; --t: 10s; --ph: 0; }
+.d--star2 { width: 46px; --x0: 92%; --y0: 80vh; --sp: 0.6; --r: -18deg; --t: 12s; --ph: 2; fill: var(--orange); }
+.d--squiggle { width: 110px; --x0: 90%; --y0: 40vh; --sp: 0.22; --r: -10deg; --t: 8s; --ph: 1; }
+.d--squiggle2 { width: 90px; --x0: 6%; --y0: 94vh; --sp: 0.5; --r: 8deg; --t: 11s; --ph: 3; }
+.d--plus { width: 38px; --x0: 84%; --y0: 8vh; --sp: 0.45; --t: 7s; --ph: 4; }
+.d--plus2 { width: 30px; --x0: 2%; --y0: 62vh; --sp: 0.28; --t: 9s; --ph: 5; }
+.d--ring { width: 64px; --x0: 86%; --y0: 66vh; --sp: 0.4; --t: 13s; --ph: 1.5; }
+.d--ring2 { width: 40px; --x0: 9%; --y0: 36vh; --sp: 0.7; --t: 10s; --ph: 3.5; }
+.d--tri { width: 52px; --x0: 1%; --y0: 28vh; --sp: 0.55; --r: -14deg; --t: 14s; --ph: 2.5; fill: var(--vanilla); }
+.d--bolt { width: 30px; --x0: 95%; --y0: 24vh; --sp: 0.32; --r: 15deg; --t: 9s; --ph: 0.5; }
+@keyframes drift { 50% { transform: translateY(-16px) scale(1.06); } }
+@media (max-width: 700px) { .d { opacity: 0.5; } .d--squiggle, .d--tri, .d--bolt { display: none; } }
+@media (prefers-reduced-motion: reduce) {
+  .layer { background-position: 0 0 !important; rotate: none !important; transition: none; }
+  .d { translate: none !important; rotate: var(--r, 0deg) !important; top: var(--y0) !important; }
+  .progress span { transition: none; }
+}
 
 .footer {
   max-width: 1120px;

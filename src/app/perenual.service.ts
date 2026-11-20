@@ -34,6 +34,11 @@ export interface ListQuery {
   /** only plants Perenual marks as not poisonous */
   safe?: boolean;
   edible?: boolean;
+  /** houseplants only (default); `false` searches the whole database, garden plants included */
+  indoor?: boolean;
+  cycle?: 'perennial' | 'annual';
+  /** USDA hardiness zone */
+  hardiness?: number;
 }
 
 export interface ListResult {
@@ -55,11 +60,14 @@ export class PerenualService {
   readonly quotaExhausted = signal(false);
 
   /**
-   * Indoor plants only; filters are applied by Perenual, not in the browser.
+   * Indoor plants by default; filters are applied by Perenual, not in the browser.
    * Normal results hide plants without a real photo and duplicate names; `raw` keeps everything.
    */
   list(query: ListQuery = {}, raw = false): Observable<ListResult> {
-    const params: Record<string, string> = { indoor: '1', page: String(query.page ?? 1) };
+    const params: Record<string, string> = { page: String(query.page ?? 1) };
+    if (query.indoor !== false) params['indoor'] = '1';
+    if (query.cycle) params['cycle'] = query.cycle;
+    if (query.hardiness) params['hardiness'] = String(query.hardiness);
     if (query.q?.trim()) params['q'] = query.q.trim();
     if (query.watering) params['watering'] = query.watering;
     if (query.sunlight) params['sunlight'] = query.sunlight;

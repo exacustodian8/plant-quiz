@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { BgSection } from '../motion/background';
 
 @Component({
   selector: 'app-not-found',
-  imports: [RouterLink],
+  imports: [RouterLink, BgSection],
   template: `
-    <div class="page missing">
+    <div class="page missing" appBg="stripes">
       <p class="eyebrow">404</p>
       <h1>This page wilted.</h1>
       <p>We couldn't find what you were looking for.</p>

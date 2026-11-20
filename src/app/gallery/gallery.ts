@@ -5,6 +5,7 @@ import { ApiErrorKind, ListQuery, PerenualService } from '../perenual.service';
 import { PlantCard } from '../plant-card/plant-card';
 import { ApiNotice } from '../api-notice/api-notice';
 import { Reveal } from '../motion/reveal';
+import { BgSection } from '../motion/background';
 import { Plant, SUNLIGHT_LABEL, Sunlight, WATERING_LABEL, Watering } from '../plant';
 
 type Light = Sunlight | 'all';
@@ -12,7 +13,7 @@ type Water = Exclude<Watering, 'none'> | 'all';
 
 @Component({
   selector: 'app-gallery',
-  imports: [PlantCard, ApiNotice, Reveal],
+  imports: [PlantCard, ApiNotice, Reveal, BgSection],
   templateUrl: './gallery.html',
   styleUrl: './gallery.css',
 })

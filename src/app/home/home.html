@@ -1,9 +1,9 @@
 <div class="page">
-  <section class="hero">
+  <section class="hero" appBg="dots">
     <div class="hero__text">
       <p class="eyebrow rise">A tiny Angular project</p>
       <h1 class="rise" style="animation-delay: 0.08s">Which plant <br>are <em>you</em>?</h1>
-      <p class="lede rise" style="animation-delay: 0.16s">Four quick questions about your habits. We'll tell you which houseplant fits your life, and won't be dead by March.</p>
+      <p class="lede rise" style="animation-delay: 0.16s">A handful of quick questions about your home and habits. We'll tell you which plant fits your life, and won't be dead by March.</p>
       <div class="actions rise" style="animation-delay: 0.24s">
         <a class="btn" routerLink="/quiz">Take the quiz</a>
         @if (store.topMatch(); as top) {
@@ -15,7 +15,7 @@
     </div>
 
     <div class="collage" aria-hidden="true">
-      <div class="burst"><span>4 quick<br>questions</span></div>
+      <div class="burst"><span>{{ questionCount }} quick<br>questions</span></div>
       @for (p of heroSlots(); track $index) {
         <figure class="snap">
           @if (p?.image; as src) {
@@ -37,7 +37,7 @@
     </div>
   }
 
-  <section class="facts" aria-label="At a glance">
+  <section class="facts" aria-label="At a glance" appBg="stripes">
     @for (f of facts(); track f.label; let i = $index) {
       <div class="fact" [appReveal]="i === 0 ? 'left' : i === 1 ? 'pop' : 'right'" [revealDelay]="i * 100">
         <strong>{{ f.value }}</strong>
@@ -46,7 +46,7 @@
     }
   </section>
 
-  <section class="steps" aria-labelledby="how">
+  <section class="steps" aria-labelledby="how" appBg="checker">
     @if (flyer(0); as f) {
       <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="8" [src]="f.image" alt="" width="260" height="260">
     }
@@ -62,7 +62,7 @@
     </ol>
   </section>
 
-  <section class="vibes" aria-labelledby="vibes-h">
+  <section class="vibes" aria-labelledby="vibes-h" appBg="waves">
     @if (flyer(1); as f) {
       <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" [src]="f.image" alt="" width="240" height="240">
     }
@@ -81,7 +81,7 @@
   </section>
 
   @if (featured().length) {
-    <section class="featured" aria-labelledby="feat">
+    <section class="featured" aria-labelledby="feat" appBg="grid">
       <div class="featured__head" appReveal>
         <h2 id="feat">Today's contenders</h2>
         <a routerLink="/plants">See all →</a>
@@ -94,7 +94,7 @@
     </section>
   }
 
-  <section class="cta">
+  <section class="cta" appBg="rays">
     @if (flyer(2); as f) {
       <img class="flyer flyer--left" appFlyIn="left" [flyTilt]="-9" [flySpin]="50" [src]="f.image" alt="" width="260" height="260">
     }
@@ -103,7 +103,7 @@
     }
     <div class="cta__box" appReveal="pop">
       <h2>Ready to meet your match?</h2>
-      <p>Takes about 20 seconds. No sign-up, no spam.</p>
+      <p>Takes about a minute. No sign-up, no spam.</p>
       <a class="btn" routerLink="/quiz">Start the quiz</a>
     </div>
   </section>

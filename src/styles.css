@@ -25,17 +25,8 @@ body {
   font-size: 1.05rem;
   line-height: 1.5;
   color: var(--black);
+  /* the patterned, scroll-reactive background lives in app.html (.bgfx); the cream is just the base */
   background-color: var(--page);
-  /* same cream, more life: warm glows + a bolder dot grid + a finer offset grid */
-  background-image:
-    radial-gradient(circle at 12% 8%, rgba(255, 193, 0, 0.28), transparent 38%),
-    radial-gradient(circle at 92% 38%, rgba(255, 130, 0, 0.18), transparent 36%),
-    radial-gradient(circle at 20% 88%, rgba(255, 193, 0, 0.24), transparent 40%),
-    radial-gradient(#f3cf6b 2px, transparent 2.5px),
-    radial-gradient(#ffe39a 1.5px, transparent 2px);
-  background-size: 100% 100%, 100% 100%, 100% 100%, 26px 26px, 26px 26px;
-  background-position: 0 0, 0 0, 0 0, 0 0, 13px 13px;
-  background-attachment: fixed;
   overflow-x: clip;
 }
 

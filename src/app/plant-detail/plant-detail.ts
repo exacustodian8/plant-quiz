@@ -6,11 +6,12 @@ import { ApiErrorKind, PerenualService } from '../perenual.service';
 import { QuizStore } from '../quiz-store';
 import { PlantCard } from '../plant-card/plant-card';
 import { ApiNotice } from '../api-notice/api-notice';
+import { BgSection } from '../motion/background';
 import { Plant, SUNLIGHT_LABEL, Sunlight, WATERING_LABEL } from '../plant';
 
 @Component({
   selector: 'app-plant-detail',
-  imports: [RouterLink, PlantCard, ApiNotice],
+  imports: [RouterLink, PlantCard, ApiNotice, BgSection],
   templateUrl: './plant-detail.html',
   styleUrl: './plant-detail.css',
 })

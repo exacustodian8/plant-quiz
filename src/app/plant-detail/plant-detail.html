@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" appBg="waves">
   @if (error(); as kind) {
     <app-api-notice [kind]="kind" (retry)="retry()" />
     <p class="back"><a routerLink="/plants">← Browse all plants</a></p>

@@ -2,7 +2,7 @@ import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { Observable, of, switchMap, map, tap, catchError, throwError, shareReplay } from 'rxjs';
 import { Traits } from './quiz-data';
 import { Plant } from './plant';
-import { buildTiers } from './matching';
+import { buildTiers, matchPercent, orderForVisitor } from './matching';
 import { ApiError, ApiErrorKind, PerenualService } from './perenual.service';
 
 const KEY = 'plantquiz:traits';
@@ -76,14 +76,17 @@ export class QuizStore {
     // strictest search first; relax only while we still have too few results
     const collect = (i: number, acc: Match[]): Observable<Match[]> => {
       if (i >= tiers.length || acc.length >= WANT) return of(acc);
-      const { query, percent } = tiers[i];
+      const tier = tiers[i];
+      const query = tier.query;
       return this.api.list(query).pipe(
         map((res) =>
-          res.plants
-            .filter((p) => !acc.some((m) => m.plant.id === p.id))
+          orderForVisitor(
+            res.plants.filter((p) => !acc.some((m) => m.plant.id === p.id)),
+            traits,
+          )
             .slice(0, WANT - acc.length)
             .map((p): Match => ({
-              percent,
+              percent: matchPercent(tier, traits, p),
               plant: {
                 ...p,
                 ...(query.watering && { watering: query.watering }),

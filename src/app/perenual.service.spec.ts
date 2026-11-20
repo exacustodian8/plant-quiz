@@ -43,7 +43,7 @@ describe('PerenualService', () => {
     const again = await firstValueFrom(api.list({ sunlight: 'full_shade' }));
     http.expectNone((r) => r.url.endsWith('/species-list'));
     expect(again.plants[0].name).toBe('Fern');
-    expect(localStorage.getItem('pq:v1:list?indoor=1&page=1&sunlight=full_shade')).toBeTruthy();
+    expect(localStorage.getItem('pq:v1:list?page=1&indoor=1&sunlight=full_shade')).toBeTruthy();
   });
 
   it('shares one request between simultaneous identical searches', () => {

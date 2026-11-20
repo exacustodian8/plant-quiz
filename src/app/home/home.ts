@@ -7,7 +7,9 @@ import { QuizStore } from '../quiz-store';
 import { PlantCard } from '../plant-card/plant-card';
 import { Reveal } from '../motion/reveal';
 import { FlyIn } from '../motion/fly-in';
+import { BgSection } from '../motion/background';
 import { Plant } from '../plant';
+import { QUESTIONS } from '../quiz-data';
 
 /** Indoor-plant list is 13 pages; show a different page each day so the site feels alive, but cacheably. */
 function pageOfTheDay(): number {
@@ -17,7 +19,7 @@ function pageOfTheDay(): number {
 
 @Component({
   selector: 'app-home',
-  imports: [RouterLink, PlantCard, Reveal, FlyIn],
+  imports: [RouterLink, PlantCard, Reveal, FlyIn, BgSection],
   templateUrl: './home.html',
   styleUrl: './home.css',
 })
@@ -39,15 +41,16 @@ export class Home {
   protected flyer = (i: number) => this.plants()[3 + i] ?? null;
   protected featured = computed(() => this.plants().slice(7, 10));
   protected quotaHit = this.api.quotaExhausted;
+  protected questionCount = QUESTIONS.length;
 
   protected facts = computed(() => [
     { value: this.feed()?.total ? String(this.feed()!.total) : '380+', label: 'indoor plants' },
-    { value: '4', label: 'quick questions' },
-    { value: '20s', label: 'to your result' },
+    { value: String(QUESTIONS.length), label: 'quick questions' },
+    { value: '1 min', label: 'to your result' },
   ]);
 
   steps = [
-    { n: '01', title: 'Answer four questions', text: 'How forgetful, how sunny, how many pets, and whether you cook.' },
+    { n: '01', title: 'Answer a few questions', text: 'Your habits, your light, your pets, how warm your home is and what look you love.' },
     { n: '02', title: 'We search the database', text: 'Your answers become live filters on a real plant database, relaxed step by step until something fits.' },
     { n: '03', title: 'Meet your match', text: 'See your best fit, plus runners-up, with a link you can share.' },
   ];

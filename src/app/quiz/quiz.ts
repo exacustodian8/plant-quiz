@@ -4,10 +4,11 @@ import { Option, QUESTIONS, Traits } from '../quiz-data';
 import { ApiErrorKind } from '../perenual.service';
 import { QuizStore } from '../quiz-store';
 import { ApiNotice } from '../api-notice/api-notice';
+import { BgSection } from '../motion/background';
 
 @Component({
   selector: 'app-quiz',
-  imports: [RouterLink, ApiNotice],
+  imports: [RouterLink, ApiNotice, BgSection],
   templateUrl: './quiz.html',
   styleUrl: './quiz.css',
 })

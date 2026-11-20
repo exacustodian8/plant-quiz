@@ -1,11 +1,16 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, catchError, concat, map, of, shareReplay, switchMap, tap, throwError } from 'rxjs';
-import { PERENUAL_KEY } from './config';
 import { Plant, Sunlight, Watering } from './plant';
 import { RawDetails, RawList, detailsToPartial, toPlant } from './perenual';
 
-const BASE = 'https://perenual.com/api/v2';
+/**
+ * The app never talks to Perenual directly and never sees the API key: requests go to a same-origin
+ * proxy that adds the key and caches responses (netlify/functions/perenual.mjs in production,
+ * proxy.conf.js under 
+g serve).
+ */
+const BASE = '/api/perenual';
 
 /**
  * The free plan allows 100 requests/day for everybody, and Perenual's image links
@@ -76,7 +81,7 @@ export class PerenualService {
 
     const key = `list?${new URLSearchParams(params)}${raw ? "&raw" : ""}`;
     return this.cached<ListResult>(key, () =>
-      this.http.get<RawList>(`${BASE}/species-list`, { params: this.withKey(params) }).pipe(
+      this.http.get<RawList>(`${BASE}/species-list`, { params }).pipe(
         map((res) => ({
           plants: raw ? res.data.map((s) => toPlant(s)) : dedupe(res.data.map((s) => toPlant(s)).filter((p) => p.image)),
           page: res.current_page,
@@ -95,7 +100,7 @@ export class PerenualService {
       `details/${id}`,
       () =>
         this.http
-          .get<RawDetails>(`${BASE}/species/details/${id}`, { params: this.withKey({}) })
+          .get<RawDetails>(`${BASE}/species/details/${id}`)
           .pipe(map((d) => toPlant(d, stripUndefined(detailsToPartial(d))))),
       true,
     );
@@ -135,10 +140,6 @@ export class PerenualService {
     return merged;
   }
 
-  private withKey(params: Record<string, string>) {
-    return new HttpParams({ fromObject: { ...params, key: PERENUAL_KEY } });
-  }
-
   private cached<T>(key: string, fetch: () => Observable<T>, isDetails = false): Observable<T> {
     const hit = readCache<T>(key);
     if (hit !== undefined) return of(hit);
@@ -158,8 +159,9 @@ export class PerenualService {
 
   private toApiError(err: HttpErrorResponse, isDetails: boolean): ApiError {
     if (err.status === 429) {
-      // On the free plan a premium species answers 429 too, so only list calls prove the daily limit.
-      if (isDetails) return new ApiError('locked');
+      // On the free plan a premium species answers 429 too. The proxy passes on how many requests are
+      // left, so a details 429 only means 'daily limit' when that has reached zero.
+      if (isDetails && err.headers?.get('X-RateLimit-Remaining') !== '0') return new ApiError('locked');
       this.quotaExhausted.set(true);
       return new ApiError('quota');
     }

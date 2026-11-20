@@ -44,4 +44,4 @@ __screenshots__/
 Thumbs.db
 
 # API key - never commit
-/src/app/config.ts
+.env

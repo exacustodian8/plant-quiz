@@ -25,7 +25,9 @@ describe('PerenualService', () => {
     expect([p.get('indoor'), p.get('watering'), p.get('sunlight'), p.get('poisonous'), p.get('edible'), p.get('q')]).toEqual([
       '1', 'minimum', 'full_sun', '0', '1', 'aloe',
     ]);
-    expect(p.has('key')).toBe(true);
+    // the browser only talks to the same-origin proxy and never holds an API key
+    expect(req.request.url).toBe('/api/perenual/species-list');
+    expect(p.has('key')).toBe(false);
 
     // a plant without a photo and a duplicate name are dropped; names are prettified;
     // a plant with no common name falls back to its scientific name
@@ -64,6 +66,13 @@ describe('PerenualService', () => {
     detailsRequest(http, 8387).flush('', { status: 429, statusText: 'Too Many Requests' });
     await expect(result).rejects.toMatchObject({ kind: 'locked' });
     expect(api.quotaExhausted()).toBe(false);
+  });
+
+  it('treats a details 429 as the daily limit when the proxy reports no requests left', async () => {
+    const result = firstValueFrom(api.details(425));
+    detailsRequest(http, 425).flush('', { status: 429, statusText: 'Too Many Requests', headers: { 'X-RateLimit-Remaining': '0' } });
+    await expect(result).rejects.toMatchObject({ kind: 'quota' });
+    expect(api.quotaExhausted()).toBe(true);
   });
 
   it('shows a known plant at once, then adds the details', async () => {

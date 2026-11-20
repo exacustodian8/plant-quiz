@@ -1,24 +1,33 @@
 # PlantQuiz
 
-Answer eight questions, get a plant that fits your life. Built with **Angular 22** (standalone components, signals, lazy routes) and live data from the [Perenual plant API](https://perenual.com/docs/api).
+Answer eight questions, get a plant that fits your life. Built with **Angular 22** (standalone components, signals, lazy routes) and live data from the [Perenual plant API](https://perenual.com/docs/api), served through a small caching proxy.
 
-## Run it
+## Run it locally
 
 You need a free Perenual API key (https://perenual.com/user/api).
 
 ```bash
 npm install
-cp src/app/config.example.ts src/app/config.ts   # then paste your key into config.ts
-npm start                                         # http://localhost:4200
-npm test                                          # unit tests (no API calls, no quota used)
+cp .env.example .env     # then paste your key into .env
+npm start                # http://localhost:4200
+npm test                 # Angular unit tests (no API calls, no quota used)
+npm run test:functions   # tests for the proxy function
 ```
 
-`src/app/config.ts` is gitignored so the key never reaches the repo. Note that any key used by a browser app is visible in the shipped JavaScript; Perenual keys only grant read access to a rate-limited free API, but don't reuse a key that has billing attached.
+The browser never sees the key. It calls `/api/perenual/...` on its own origin; under `npm start` the dev server (`proxy.conf.js`) adds the key from `.env`, and in production a Netlify Function does (`netlify/functions/perenual.mjs`). `.env` is gitignored.
+
+## Deploy (Netlify)
+
+1. Push the repo to GitHub.
+2. In Netlify: **Add new site → Import an existing project**, pick the repo. `netlify.toml` already sets the build command, publish folder, Node version, function folder and the single-page-app redirect.
+3. **Site configuration → Environment variables**: add `PERENUAL_KEY` (your key). Redeploy.
+
+The proxy only forwards the two endpoints the app uses with a whitelist of validated parameters (so it can't be used as an open relay), and caches good responses on Netlify's CDN for 6 hours, shared by every visitor. Perenual's image links expire after 24 hours, which is why the cache must stay well below that. Quota errors are never cached, so the site recovers as soon as the daily limit resets.
 
 ## How it works
 
 - **The quiz is a search.** `matching.ts` turns the answers into API filters (`watering`, `sunlight`, `poisonous=0`, `edible`, `cycle`, `hardiness` zone, and `indoor` on/off to open up the full 10,000-plant database). If the strictest search finds too little, preferences are relaxed one at a time (least important first); pet safety and "indoors only" are never relaxed. Perenual has no "look" field, so the style question ranks results by botanical family on the client. Results are shuffled with a seed derived from the answers, so the API's fixed order doesn't make the same plant win every time. The match percentage says how many of your answers a result honours.
-- **Built for a 100-requests/day free plan.** Responses are cached for 6 hours (memory + `localStorage`; Perenual's image links expire after 24 h), identical in-flight requests are shared, and one request feeds the whole home page. When the limit is hit the UI says so instead of breaking.
+- **Built for a 100-requests/day free plan.** Shared CDN cache in production, a 6-hour browser cache (memory + `localStorage`), identical in-flight requests are shared, and one request feeds the whole home page. When the limit is hit the UI says so instead of breaking.
 - **Premium-only species** (the free plan blocks the details endpoint for many popular plants) are handled: results come from the list endpoint, and share links carry the plant name (`/plant/8387?n=ZZ%20plant`) so the page can still be rebuilt with a name search.
 - **Pet safety is only as good as the data.** Perenual's "not poisonous" flag has errors, so the UI says to verify with the ASPCA list.
 

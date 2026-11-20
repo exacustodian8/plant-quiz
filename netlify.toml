@@ -1,0 +1,40 @@
+[build]
+  command = "npm run build"
+  publish = "dist/plant-quiz/browser"
+
+[build.environment]
+  # Angular 22 needs Node 22.22+/24.15+
+  NODE_VERSION = "24"
+
+[functions]
+  directory = "netlify/functions"
+
+# The plant API proxy (hides the key, caches responses). Set PERENUAL_KEY in the Netlify site settings.
+[[redirects]]
+  from = "/api/perenual/*"
+  to = "/.netlify/functions/perenual/:splat"
+  status = 200
+
+# Single-page app: every other path serves the app, so /plant/123 and refreshes work
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Angular fingerprints these file names, so they can be cached forever
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

@@ -1,10 +1,15 @@
 <div class="page">
   <section class="quiz">
-    @if (failed()) {
-      <h2>Couldn't load the plants 😕</h2>
-      <p>Check your connection and refresh the page.</p>
-    } @else if (waiting()) {
+    @if (error(); as kind) {
+      <app-api-notice [kind]="kind" (retry)="search()" />
+      <button class="link" type="button" (click)="restart()">← Start over</button>
+    } @else if (noMatch()) {
+      <h2>No plant fits that 🥀</h2>
+      <p>Try different answers, or browse the whole collection.</p>
+      <button class="btn" type="button" (click)="restart()">Retake the quiz</button>
+    } @else if (searching()) {
       <p class="count" role="status">Finding your plant…</p>
+      <div class="finding" aria-hidden="true"><span></span><span></span><span></span></div>
     } @else {
       <div class="bar" role="progressbar" aria-label="Quiz progress"
            [attr.aria-valuenow]="index()" aria-valuemin="0" [attr.aria-valuemax]="questions.length">

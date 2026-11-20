@@ -26,3 +26,6 @@
 @keyframes slide { to { background-position: 40px 0; } }
 
 .empty { grid-column: 1 / -1; text-align: center; padding: 3rem 0; font-weight: 700; }
+
+.more { display: grid; place-items: center; margin-top: 2.5rem; }
+.btn:disabled { opacity: 0.6; cursor: progress; transform: none; box-shadow: var(--shadow-sm); }

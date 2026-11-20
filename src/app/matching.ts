@@ -1,35 +1,48 @@
-import { Plant } from './plant';
+import { ListQuery } from './perenual.service';
 import { Traits } from './quiz-data';
 
-export interface Match {
-  plant: Plant;
-  score: number;
-  /** 0–100, how well the plant fits the answers given */
+/** What we asked Perenual for in one search, and how closely it fits the quiz answers. */
+export interface Tier {
+  query: ListQuery;
+  /** 0-100: share of the answered preferences this search honoured */
   percent: number;
 }
 
-const WATERING_POINTS = 3;
-const SUNLIGHT_POINTS = 3;
-const VIBE_POINTS = 2;
+const WEIGHT = { watering: 3, sunlight: 3, edible: 2 } as const;
 
-export function score(p: Plant, t: Partial<Traits>): number {
-  let s = 0;
-  if (t.watering === p.watering) s += WATERING_POINTS;
-  if (t.sunlight && p.sunlight.includes(t.sunlight)) s += SUNLIGHT_POINTS;
-  if (t.vibe === p.vibe) s += VIBE_POINTS;
-  return s;
-}
+/**
+ * Perenual does the matching (it filters server-side), so a "match" is a search.
+ * We try the strictest search first and relax preferences one at a time, least
+ * important first, until there are enough results. Pet safety is never relaxed.
+ */
+export function buildTiers(t: Partial<Traits>): Tier[] {
+  const total =
+    (t.watering ? WEIGHT.watering : 0) + (t.sunlight ? WEIGHT.sunlight : 0) + (t.edible ? WEIGHT.edible : 0);
+  const base: ListQuery = t.petFriendly ? { safe: true } : {};
 
-/** Ranks plants best-first. A pet owner's pool only contains pet-safe plants. */
-export function rankPlants(plants: Plant[], t: Partial<Traits>): Match[] {
-  const max =
-    (t.watering ? WATERING_POINTS : 0) + (t.sunlight ? SUNLIGHT_POINTS : 0) + (t.vibe ? VIBE_POINTS : 0);
-  const pool = t.petFriendly ? plants.filter((p) => p.petFriendly) : plants;
+  // preference combinations, strictest first: [watering, sunlight, edible]
+  const combos: [boolean, boolean, boolean][] = [
+    [true, true, true],
+    [true, true, false],
+    [false, true, false],
+    [true, false, false],
+    [false, false, false],
+  ];
 
-  return pool
-    .map((plant) => {
-      const s = score(plant, t);
-      return { plant, score: s, percent: max ? Math.round((s / max) * 100) : 0 };
-    })
-    .sort((a, b) => b.score - a.score);
+  const seen = new Set<string>();
+  const tiers: Tier[] = [];
+  for (const [w, s, e] of combos) {
+    const query: ListQuery = { ...base };
+    let got = 0;
+    if (w && t.watering) { query.watering = t.watering; got += WEIGHT.watering; }
+    if (s && t.sunlight) { query.sunlight = t.sunlight; got += WEIGHT.sunlight; }
+    if (e && t.edible) { query.edible = true; got += WEIGHT.edible; }
+
+    // skip combinations that collapse into one we already have (e.g. the user never answered edible)
+    const key = JSON.stringify(query);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    tiers.push({ query, percent: total ? Math.round((got / total) * 100) : 0 });
+  }
+  return tiers;
 }

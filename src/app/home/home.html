@@ -7,22 +7,35 @@
       <div class="actions rise" style="animation-delay: 0.24s">
         <a class="btn" routerLink="/quiz">Take the quiz</a>
         @if (store.topMatch(); as top) {
-          <a class="btn btn--ghost" [routerLink]="['/plant', top.plant.id]">Your last result: {{ top.plant.name }}</a>
+          <a class="btn btn--ghost" [routerLink]="['/plant', top.plant.id]" [queryParams]="{ n: top.plant.name }">Your last result: {{ top.plant.name }}</a>
         } @else {
-          <a class="btn btn--ghost" routerLink="/plants">Browse {{ count() || '' }} plants</a>
+          <a class="btn btn--ghost" routerLink="/plants">Browse all plants</a>
         }
       </div>
     </div>
 
     <div class="collage" aria-hidden="true">
       <div class="burst"><span>4 quick<br>questions</span></div>
-      <figure class="snap snap--1"><img src="plants/monstera.jpg" alt="" width="400" height="400"></figure>
-      <figure class="snap snap--2"><img src="plants/snake.jpg" alt="" width="400" height="400"></figure>
-      <figure class="snap snap--3"><img src="plants/aloe.jpg" alt="" width="400" height="400"></figure>
+      @for (p of heroSlots(); track $index) {
+        <figure class="snap">
+          @if (p?.image; as src) {
+            <img [src]="src" alt="" width="400" height="400">
+          } @else {
+            <span class="ph">🪴</span>
+          }
+        </figure>
+      }
       <span class="sticker sticker--1">Low light ok</span>
       <span class="sticker sticker--2">Pet-safe?</span>
     </div>
   </section>
+
+  @if (quotaHit()) {
+    <div class="notice">
+      <h2>The plant API is resting 😴</h2>
+      <p>The free plant database allows 100 requests a day and today's are used up. Photos and search return tomorrow.</p>
+    </div>
+  }
 
   <section class="facts" aria-label="At a glance">
     @for (f of facts(); track f.label; let i = $index) {
@@ -34,7 +47,9 @@
   </section>
 
   <section class="steps" aria-labelledby="how">
-    <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="8" src="plants/jade.jpg" alt="" width="260" height="260">
+    @if (flyer(0); as f) {
+      <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="8" [src]="f.image" alt="" width="260" height="260">
+    }
     <h2 id="how" appReveal="left">How it works</h2>
     <ol>
       @for (s of steps; track s.n; let i = $index) {
@@ -48,16 +63,18 @@
   </section>
 
   <section class="vibes" aria-labelledby="vibes-h">
-    <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" src="plants/peperomia.jpg" alt="" width="240" height="240">
-    <h2 id="vibes-h" appReveal="right">Pick a personality</h2>
+    @if (flyer(1); as f) {
+      <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" [src]="f.image" alt="" width="240" height="240">
+    }
+    <h2 id="vibes-h" appReveal="right">What's your light like?</h2>
     <div class="vibes__grid">
-      @for (v of vibes; track v.key; let i = $index) {
-        <a class="vibe" [routerLink]="['/plants']" [queryParams]="{ vibe: v.key }"
-           [attr.data-vibe]="v.key" [appReveal]="i === 0 ? 'left' : i === 1 ? 'pop' : 'right'" [revealDelay]="i * 120">
-          <img [src]="v.image" alt="" loading="lazy" width="400" height="300">
-          <h3>{{ v.title }}</h3>
-          <p>{{ v.text }}</p>
-          <span class="go">See {{ v.key }} plants →</span>
+      @for (l of lights; track l.key; let i = $index) {
+        <a class="vibe" [routerLink]="['/plants']" [queryParams]="{ sun: l.key }"
+           [attr.data-tone]="i" [appReveal]="i === 0 ? 'left' : i === 1 ? 'pop' : 'right'" [revealDelay]="i * 120">
+          <span class="icon" aria-hidden="true">{{ l.icon }}</span>
+          <h3>{{ l.title }}</h3>
+          <p>{{ l.text }}</p>
+          <span class="go">See {{ l.title.toLowerCase() }} plants →</span>
         </a>
       }
     </div>
@@ -66,7 +83,7 @@
   @if (featured().length) {
     <section class="featured" aria-labelledby="feat">
       <div class="featured__head" appReveal>
-        <h2 id="feat">Some of the contenders</h2>
+        <h2 id="feat">Today's contenders</h2>
         <a routerLink="/plants">See all →</a>
       </div>
       <div class="grid">
@@ -78,8 +95,12 @@
   }
 
   <section class="cta">
-    <img class="flyer flyer--left" appFlyIn="left" [flyTilt]="-9" [flySpin]="50" src="plants/fern.jpg" alt="" width="260" height="260">
-    <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" [flySpin]="50" src="plants/palm.jpg" alt="" width="260" height="260">
+    @if (flyer(2); as f) {
+      <img class="flyer flyer--left" appFlyIn="left" [flyTilt]="-9" [flySpin]="50" [src]="f.image" alt="" width="260" height="260">
+    }
+    @if (flyer(3); as f) {
+      <img class="flyer flyer--right" appFlyIn="right" [flyTilt]="7" [flySpin]="50" [src]="f.image" alt="" width="260" height="260">
+    }
     <div class="cta__box" appReveal="pop">
       <h2>Ready to meet your match?</h2>
       <p>Takes about 20 seconds. No sign-up, no spam.</p>

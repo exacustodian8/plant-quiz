@@ -1,15 +1,22 @@
 <div class="page">
-  @if (plant(); as p) {
+  @if (error(); as kind) {
+    <app-api-notice [kind]="kind" (retry)="retry()" />
+    <p class="back"><a routerLink="/plants">← Browse all plants</a></p>
+  } @else if (plant(); as p) {
     <article class="detail rise">
       <figure class="photo">
-        <div class="portrait big" [attr.data-vibe]="p.vibe">
-          <img [src]="p.image" [alt]="p.name" width="900" height="900">
-          <span class="emoji" aria-hidden="true">{{ p.emoji }}</span>
+        <div class="portrait big" [attr.data-tone]="p.id % 3">
+          @if (p.image) {
+            <img [src]="p.image" [alt]="p.name" width="900" height="900">
+          } @else {
+            <span class="ph" aria-hidden="true">🪴</span>
+          }
         </div>
-        <figcaption>
-          Photo: {{ p.credit.author }} ·
-          <a [href]="p.credit.source" target="_blank" rel="noopener">{{ p.credit.license }}</a> · via iNaturalist
-        </figcaption>
+        @if (p.credit) {
+          <figcaption>
+            Photo: <a [href]="p.credit.url" target="_blank" rel="noopener">{{ p.credit.license }}</a> · via Perenual
+          </figcaption>
+        }
       </figure>
 
       <div class="info">
@@ -18,18 +25,31 @@
         } @else if (myMatch(); as m) {
           <p class="eyebrow">{{ m.percent }}% match for you</p>
         } @else {
-          <p class="eyebrow">{{ vibe[p.vibe] }} plant</p>
+          <p class="eyebrow">Houseplant</p>
         }
 
         <h1>{{ p.name }}</h1>
         <p class="latin">{{ p.scientific }}</p>
-        <p class="blurb">{{ p.blurb }}</p>
+
+        @if (p.description) {
+          <p class="blurb" [class.is-clamped]="!expanded()">{{ p.description }}</p>
+          @if (p.description.length > 260) {
+            <button class="link" type="button" (click)="expanded.set(!expanded())">{{ expanded() ? "Show less" : "Read more" }}</button>
+          }
+        }
 
         <ul class="tags">
-          <li class="tag">💧 {{ watering[p.watering] }}</li>
-          <li class="tag">☀️ {{ p.sunlight.map(s => sunlight[s]).join(' / ') }}</li>
-          <li class="tag">{{ p.petFriendly ? '🐾 Pet-safe' : '⚠️ Toxic to pets' }}</li>
+          @if (p.watering) { <li class="tag">💧 {{ watering[p.watering] }}</li> }
+          @if (p.sunlight?.length) { <li class="tag">☀️ {{ lightText(p.sunlight!) }}</li> }
+          @if (p.petFriendly) { <li class="tag">🐾 Not poisonous</li> }
+          @if (p.edible) { <li class="tag">🍃 Edible</li> }
+          @if (p.careLevel) { <li class="tag">🌱 {{ p.careLevel }} care</li> }
+          @if (p.family) { <li class="tag">{{ p.family }}</li> }
         </ul>
+
+        @if (showPetNote()) {
+          <p class="note">Pet-safety info comes from the Perenual database and can be wrong. Always check the ASPCA's plant list before bringing a plant home.</p>
+        }
 
         <div class="actions">
           <button class="btn" type="button" (click)="share()">{{ copied() ? 'Link copied ✓' : 'Share' }}</button>
@@ -48,13 +68,7 @@
         </div>
       </section>
     }
-  } @else if (service.status() === 'loading') {
-    <div class="skeleton" aria-busy="true" aria-label="Loading plant"></div>
   } @else {
-    <div class="missing">
-      <h1>No such plant 🥀</h1>
-      <p>We couldn't find “{{ id() }}”.</p>
-      <a class="btn" routerLink="/plants">Browse all plants</a>
-    </div>
+    <div class="skeleton" aria-busy="true" aria-label="Loading plant"></div>
   }
 </div>

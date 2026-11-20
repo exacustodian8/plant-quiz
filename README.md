@@ -1,59 +1,31 @@
 # PlantQuiz
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.2.7.
+Answer four questions, get a houseplant that fits your life. Built with **Angular 22** (standalone components, signals, lazy routes) and live data from the [Perenual plant API](https://perenual.com/docs/api).
 
-## Development server
+## Run it
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+You need a free Perenual API key (https://perenual.com/user/api).
 
 ```bash
-ng generate component component-name
+npm install
+cp src/app/config.example.ts src/app/config.ts   # then paste your key into config.ts
+npm start                                         # http://localhost:4200
+npm test                                          # unit tests (no API calls, no quota used)
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+`src/app/config.ts` is gitignored so the key never reaches the repo. Note that any key used by a browser app is visible in the shipped JavaScript; Perenual keys only grant read access to a rate-limited free API, but don't reuse a key that has billing attached.
 
-```bash
-ng generate --help
-```
+## How it works
 
-## Building
+- **The quiz is a search.** `matching.ts` turns the answers into API filters (`watering`, `sunlight`, `poisonous=0`, `edible`). If the strictest search finds too little, preferences are relaxed one at a time (least important first); pet safety is never relaxed. The match percentage says how many of your answers a result honours.
+- **Built for a 100-requests/day free plan.** Responses are cached for 6 hours (memory + `localStorage`; Perenual's image links expire after 24 h), identical in-flight requests are shared, and one request feeds the whole home page. When the limit is hit the UI says so instead of breaking.
+- **Premium-only species** (the free plan blocks the details endpoint for many popular plants) are handled: results come from the list endpoint, and share links carry the plant name (`/plant/8387?n=ZZ%20plant`) so the page can still be rebuilt with a name search.
+- **Pet safety is only as good as the data.** Perenual's "not poisonous" flag has errors, so the UI says to verify with the ASPCA list.
 
-To build the project run:
+## Angular features on show
 
-```bash
-ng build
-```
+Signals (`signal`, `computed`, `linkedSignal`, `input()`), RxJS interop (`toSignal`, `toObservable`), route params and query params bound straight to inputs, lazy-loaded routes, view transitions, custom directives for scroll animation (`Reveal`, `FlyIn`), `@if/@for` control flow, typed HTTP with caching and error mapping, and unit tests with `HttpTestingController`.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## Credits
 
-## Running unit tests
-
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Plant data and photos: [Perenual](https://perenual.com). Each photo's licence is shown on its plant page.

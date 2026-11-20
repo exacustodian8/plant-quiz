@@ -13,28 +13,28 @@
         <button class="chip" type="button" [class.is-active]="light() === l.value"
                 [attr.aria-pressed]="light() === l.value" (click)="light.set(l.value)">{{ l.label }}</button>
       }
-      <button class="chip" type="button" [class.is-active]="petSafeOnly()"
-              [attr.aria-pressed]="petSafeOnly()" (click)="petSafeOnly.set(!petSafeOnly())">🐾 Pet-safe</button>
     </div>
 
-    <div class="filters" role="group" aria-label="Filter by vibe">
-      @for (v of vibes; track v.value) {
-        <button class="chip" type="button" [class.is-active]="vibe() === v.value"
-                [attr.aria-pressed]="vibe() === v.value" (click)="vibe.set(v.value)">{{ v.label }}</button>
+    <div class="filters" role="group" aria-label="Filter by watering">
+      @for (w of waters; track w.value) {
+        <button class="chip" type="button" [class.is-active]="watering() === w.value"
+                [attr.aria-pressed]="watering() === w.value" (click)="watering.set(w.value)">{{ w.label }}</button>
       }
+      <button class="chip" type="button" [class.is-active]="safeOnly()"
+              [attr.aria-pressed]="safeOnly()" (click)="safeOnly.set(!safeOnly())">🐾 Not poisonous</button>
     </div>
   </div>
 
-  @if (service.status() === 'loading') {
+  @if (status() === 'loading') {
     <div class="grid" aria-busy="true">
       @for (n of [1, 2, 3, 4, 5, 6]; track n) { <div class="ghost"></div> }
     </div>
-  } @else if (service.status() === 'error') {
-    <p class="empty">Couldn't load the plants. Refresh to try again.</p>
+  } @else if (status() === 'error') {
+    <app-api-notice [kind]="error()" (retry)="retry()" />
   } @else {
-    <p class="result-count" aria-live="polite">{{ visible().length }} of {{ service.plants().length }} plants</p>
+    <p class="result-count" aria-live="polite">Showing {{ plants().length }} of {{ total() }} plants</p>
     <div class="grid">
-      @for (p of visible(); track p.id; let i = $index) {
+      @for (p of plants(); track p.id; let i = $index) {
         <app-plant-card [plant]="p" appReveal="up" [revealDelay]="(i % 3) * 90" />
       } @empty {
         <div class="empty">
@@ -43,5 +43,13 @@
         </div>
       }
     </div>
+
+    @if (canLoadMore()) {
+      <div class="more">
+        <button class="btn" type="button" [disabled]="loadingMore()" (click)="loadMore()">
+          {{ loadingMore() ? 'Loading…' : 'Load more' }}
+        </button>
+      </div>
+    }
   }
 </div>

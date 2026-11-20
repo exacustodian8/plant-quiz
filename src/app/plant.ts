@@ -1,41 +1,46 @@
-import { Traits } from './quiz-data';
+export type Watering = 'frequent' | 'average' | 'minimum' | 'none';
+export type Sunlight = 'full_shade' | 'part_shade' | 'full_sun';
 
 export interface PhotoCredit {
-  author: string;
   license: string;
-  /** iNaturalist observation page the photo came from */
-  source: string;
+  url: string;
 }
 
+/** The app's own plant shape, mapped from Perenual's responses (see perenual.service.ts). */
 export interface Plant {
-  id: string;
-  /** path to a local photo under /plants */
-  image: string;
-  credit: PhotoCredit;
+  id: number;
   name: string;
   scientific: string;
-  emoji: string;
-  watering: Traits['watering'];
-  sunlight: Traits['sunlight'][];
-  petFriendly: boolean;
-  vibe: Traits['vibe'];
-  blurb: string;
+  family?: string;
+  image: string | null;
+  credit: PhotoCredit | null;
+
+  // Known when we searched by that trait, or when the details endpoint was available.
+  watering?: Watering;
+  sunlight?: Sunlight[];
+  petFriendly?: boolean;
+  edible?: boolean;
+
+  // Only from the details endpoint (free plan: low-numbered species only).
+  description?: string;
+  careLevel?: string;
+  growthRate?: string;
 }
 
-export const WATERING_LABEL: Record<Traits['watering'], string> = {
+export const WATERING_LABEL: Record<Watering, string> = {
+  none: 'Barely any water',
   minimum: 'Water rarely',
   average: 'Water weekly',
   frequent: 'Keep it moist',
 };
 
-export const SUNLIGHT_LABEL: Record<Traits['sunlight'], string> = {
+export const SUNLIGHT_LABEL: Record<Sunlight, string> = {
   full_shade: 'Low light',
   part_shade: 'Bright, indirect',
   full_sun: 'Full sun',
 };
 
-export const VIBE_LABEL: Record<Traits['vibe'], string> = {
-  calm: 'Calm',
-  bold: 'Bold',
-  quirky: 'Quirky',
-};
+/** 'flowering-maple' -> 'Flowering Maple' */
+export function titleCase(s: string): string {
+  return s.replace(/[-_]+/g, ' ').replace(/\b\p{L}/gu, (c) => c.toUpperCase());
+}

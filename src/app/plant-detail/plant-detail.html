@@ -52,6 +52,9 @@
         }
 
         <div class="actions">
+          <button class="btn btn--fav" type="button" [class.is-on]="favs.has(p.id)" [attr.aria-pressed]="favs.has(p.id)" (click)="favs.toggle(p)">
+            {{ favs.has(p.id) ? '♥ In favourites' : '♡ Add to favourites' }}
+          </button>
           <button class="btn" type="button" (click)="share()">{{ copied() ? 'Link copied ✓' : 'Share' }}</button>
           <a class="btn btn--ghost" routerLink="/quiz">{{ myMatch() ? 'Retake the quiz' : 'Find your own' }}</a>
         </div>

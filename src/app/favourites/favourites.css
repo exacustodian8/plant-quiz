@@ -1,0 +1,5 @@
+.result-count { margin: 1.4rem 0 0; font-weight: 700; font-size: 0.95rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 28px; margin-top: 1rem; }
+.item { display: grid; gap: 0.6rem; align-content: start; }
+.empty { text-align: center; padding: 3rem 0; font-weight: 700; display: grid; gap: 0.8rem; justify-items: center; }
+.hint { font-weight: 500; margin: 0; }

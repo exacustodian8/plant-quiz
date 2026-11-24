@@ -4,6 +4,7 @@ import { RouterLink } from '@angular/router';
 import { EMPTY, catchError, switchMap, tap } from 'rxjs';
 import { ApiErrorKind, PerenualService } from '../perenual.service';
 import { QuizStore } from '../quiz-store';
+import { FavouritesStore } from '../favourites-store';
 import { PlantCard } from '../plant-card/plant-card';
 import { ApiNotice } from '../api-notice/api-notice';
 import { BgSection } from '../motion/background';
@@ -22,6 +23,7 @@ export class PlantDetail {
 
   private api = inject(PerenualService);
   protected store = inject(QuizStore);
+  protected favs = inject(FavouritesStore);
 
   private loaded = signal<Plant | null>(null);
   protected error = signal<ApiErrorKind | null>(null);

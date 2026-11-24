@@ -26,6 +26,7 @@
   <a class="nav__logo" routerLink="/">PlantQuiz.</a>
   <nav class="nav__links" aria-label="Main">
     <a routerLink="/plants" routerLinkActive="is-active">Plants</a>
+    <a routerLink="/favourites" routerLinkActive="is-active">Favourites @if (favs.count()) {<span class="nav__count">{{ favs.count() }}</span>}</a>
   </nav>
   <a class="btn btn--small" routerLink="/quiz">Take the quiz</a>
 </header>

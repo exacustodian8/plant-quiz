@@ -1,0 +1,22 @@
+<div class="page" appBg="grid">
+  <p class="eyebrow">Your shortlist</p>
+  <h1>Favourites</h1>
+
+  @if (store.plants().length) {
+    <p class="result-count" aria-live="polite">{{ store.count() }} {{ store.count() === 1 ? 'plant' : 'plants' }} saved this visit</p>
+    <div class="grid">
+      @for (p of store.plants(); track p.id; let i = $index) {
+        <div class="item">
+          <app-plant-card [plant]="p" appReveal="up" [revealDelay]="(i % 3) * 90" />
+          <button class="link" type="button" (click)="store.remove(p.id)">Remove from favourites</button>
+        </div>
+      }
+    </div>
+  } @else {
+    <div class="empty">
+      <p>No favourites yet.</p>
+      <p class="hint">Open a plant and tap “Add to favourites” to collect it here.</p>
+      <a class="btn btn--small" routerLink="/plants">Browse plants</a>
+    </div>
+  }
+</div>

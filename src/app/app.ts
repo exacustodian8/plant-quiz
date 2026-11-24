@@ -1,5 +1,6 @@
 import { Component, ElementRef, afterNextRender, inject, viewChild } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { FavouritesStore } from './favourites-store';
 import { BG_PATTERNS, BgService } from './motion/background';
 
 @Component({
@@ -10,6 +11,7 @@ import { BG_PATTERNS, BgService } from './motion/background';
 })
 export class App {
   protected bg = inject(BgService);
+  protected favs = inject(FavouritesStore);
   protected patterns = BG_PATTERNS;
 
   private bgfx = viewChild.required<ElementRef<HTMLElement>>('bgfx');
